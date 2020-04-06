@@ -10,7 +10,7 @@ Some of the tools we'll be using in this project include: Ansible, Kubernetes, G
 
 There are some preliminary steps that we need to take before we can execute our Actions to begin our deployment workflows. 
 
-## Preliminary Step 1: Setup the secret: 
+## Preliminary Step 1: Setup the Packet.com API secret: 
 `PACKET_API_KEY` 
 
 Log in to the Packet.com portal, click on your user profile on the top right, select `API Keys`. 
