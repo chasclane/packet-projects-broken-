@@ -23,7 +23,7 @@ jobs:
           SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
       - name: Secure copy k8s Config
         if: success()
-        run: scp -i $HOME/secrets/packet_private_key.pem -o 'StrictHostKeyChecking no' -r root@147.75.69.17:/root/.kube $HOME/
+        run: scp -i $HOME/secrets/packet_private_key.pem -o 'StrictHostKeyChecking no' -r root@147.75.199.5:/root/.kube $HOME/
       - name: Get pod information
         run: |
           kubectl get nodes
