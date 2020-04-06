@@ -1,0 +1,29 @@
+on:
+  issue_comment:
+    types:
+      - created
+      - edited
+
+name: Deploy K8s
+
+jobs:
+  check-nodes:
+    name: Get k8s Node Information
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Decrypt Pem
+        if: success()
+        run: |
+          mkdir $HOME/secrets
+          gpg --quiet --batch --yes --decrypt --passphrase="$SECRET_PASSPHRASE" --output $HOME/secrets/packet_private_key.pem id_packet.gpg
+          chmod 600 $HOME/secrets/packet_private_key.pem
+        env:
+          SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
+      - name: Secure copy k8s Config
+        if: success()
+        run: scp -i $HOME/secrets/packet_private_key.pem -o 'StrictHostKeyChecking no' -r root@147.75.68.167:/root/.kube $HOME/
+      - name: Get pod information
+        run: |
+          kubectl get nodes

@@ -1,0 +1,14 @@
+---
+- hosts: minion
+  vars_files:
+    - ../env_variables
+  tasks:
+    - name: Copying token to worker nodes
+      copy: src=/tmp/{{ token_file }} dest=/tmp/join_token
+
+    - name: Joining worker nodes with kubernetes master
+      shell: |
+        kubeadm reset -f
+        printf "sudo "> out.sh
+        cat /tmp/join_token | tail -2 >> out.sh
+        sh out.sh

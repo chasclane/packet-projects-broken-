@@ -1,0 +1,62 @@
+on:
+  issues:
+    types:
+      - labeled
+
+name: create a k8s cluster with ansible
+
+env:
+  PROJECT_NAME: With-ansible
+
+jobs:
+  create-inventory:
+    name: Create ansible inventory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Ansible Inventory File
+        uses: mattdavis0351/packet-create-ansible-inventory@v1
+        if: success()
+        with:
+          API_key: ${{ secrets.PACKET_API_KEY }}
+          project_name: ${{ env.PROJECT_NAME }}
+          group_names: "master, minion"
+      - name: Upload inventory file as Artifact
+        uses: actions/upload-artifact@v1
+        if: success()
+        with:
+          name: hosts
+          path: hosts
+
+  run-playbook:
+    needs: [create-inventory]
+    runs-on: ubuntu-latest
+    name: Ping using ansible-playbook
+    steps:
+      - name: Checkout repo files
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: hosts
+
+      - name: Decrypt Pem
+        if: success()
+        run: |
+          mkdir $HOME/secrets
+          gpg --quiet --batch --yes --decrypt --passphrase="$SECRET_PASSPHRASE" --output $HOME/secrets/packet_private_key.pem id_packet.gpg
+          chmod 600 $HOME/secrets/packet_private_key.pem
+        env:
+          SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
+
+      - name: Setup K8s Master
+        if: success()
+        run: |
+          cd ansible
+          ansible-playbook setup_master_node.yml
+
+      - name: Setup K8s Workers
+        if: success()
+        run: |
+          cd ansible
+          ansible-playbook setup_worker_nodes.yml

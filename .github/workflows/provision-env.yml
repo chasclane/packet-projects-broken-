@@ -1,0 +1,45 @@
+on: [watch]
+
+name: Provision Environment
+env:
+  PROJECT_NAME: With-ansible #change this to be a name you want
+
+jobs:
+  transfer-user-ssh-keys:
+    runs-on: ubuntu-latest
+    name: transfer keys
+    steps:
+      - name: Transfer SSH keys
+        uses: mattdavis0351/packet-create-user-ssh-key@v1
+        id: key
+        with:
+          API_key: ${{ secrets.PACKET_API_KEY }}
+          key_label: matt-actions
+          public_key: ${{ secrets.PACKET_PUBLIC_KEY }}
+
+  deploy-new-project-and-device-batch:
+    needs: transfer-user-ssh-keys
+    runs-on: ubuntu-latest
+    name: Provisioning infrastructure
+    steps:
+      - name: Create new project
+        uses: mattdavis0351/packet-create-project@v1
+        id: project
+        with:
+          API_key: ${{ secrets.PACKET_API_KEY }}
+          project_name: ${{ env.PROJECT_NAME }}
+
+      - name: Create new device batch
+        uses: mattdavis0351/packet-create-device-batch@v1
+        if: success()
+        with:
+          API_key: ${{ secrets.PACKET_API_KEY }}
+          project_name: ${{ env.PROJECT_NAME }}
+          host_names: "K8s Master, K8s-minion 1,K8s-minion-2,K8s-minion-3"
+          plan: "t3.small.x86"
+          facility: "sjc1"
+          operating_system: "centos_7"
+          quantity: 4
+          spot_instance: false
+          spot_price_max: .50
+          user_ssh_keys: ${{ secrets.PACKET_PUBLIC_KEY }}
