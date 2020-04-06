@@ -59,7 +59,10 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 - How we're executing this one: 
 
-We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "watched".
+We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
+
+Star this to Run:
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/provision-env.yml
 
 - What's happening and how:
 
@@ -120,6 +123,10 @@ https://github.com/marketplace/actions/checkout
 
 In order to execute this step, we have configured it to trigger on the "labeled" event. This means it will run when we add a Label to an issue for the workflow file: `run-ansible.yml`
 
+Add the label: Much Awesome to this to Run the workflow:
+
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/run-ansible.yml
+
 - What's happening and how:
 
 The first Action performed here is to send a runner to gather an Inventory of our nodes, which also helps us ensure that they are all running and accessible. 
@@ -159,6 +166,10 @@ https://github.com/marketplace/actions/checkout
 - How we're executing this one:
 
 This workflow is executed on the event that a comment is added or edited on the workflow file: deploy-k8s.yml. 
+
+Add or edit a comment to run the last workflow here:
+
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/deploy-k8s.yml
 
 The first job this workflow is executing is to deploy Kubernetes CLI kubectl to the runner so that it can execute commands for the kubernetes master remotely. 
 
