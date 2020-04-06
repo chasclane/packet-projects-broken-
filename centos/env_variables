@@ -1,0 +1,19 @@
+#ad_addr is the Kube-Master Node.
+ad_addr: 172.17.237.242 
+#kube-flannel uses this block:
+cidr_v: 10.244.0.0/16 
+
+packages:
+- kubeadm
+- kubectl
+
+services:
+- docker
+- kubelet
+- firewalld
+
+ports:
+- "6443/tcp"
+- "10250/tcp"
+
+token_file: join_token
