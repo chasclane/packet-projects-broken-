@@ -12,7 +12,7 @@ There are some preliminary steps that we need to take before we can execute our 
 
 In order to use Ansible, first we will need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
 
-We will set the passphrase for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our  public key (PACKET_PUBLIC_KEY)
+We will set the passphrase for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our  public key (`PACKET_PUBLIC_KEY`)
 
 **To Use GPG and store for later use:**
 Run:
@@ -185,4 +185,12 @@ The first job this workflow is executing is to deploy Kubernetes CLI kubectl to 
 
 To do this, we securely copy the ssh keys to the runner so it can execute commands using ssh. 
 
-The runner then tests this by executing the command: ```kubectl get nodes```
+The runner then tests this by executing the command: 
+```shell
+kubectl get nodes
+```
+
+#So... what next? 
+
+***Well, that's up to you! Now that we've put the CI/CD framework in place, you're ready to either scale your k8s cluster up or down, deploy container workloads and explore the power of deploying to a true bare-metal as a service platform using an awesome set of tools to build and use our awesome new CI/CD pipeline!***
+
