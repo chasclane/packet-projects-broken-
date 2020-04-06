@@ -36,8 +36,8 @@ jobs:
           API_key: ${{ secrets.PACKET_API_KEY }}
           project_name: ${{ env.PROJECT_NAME }}
           host_names: "K8s-Master, K8s-minion-1, K8s-minion-2, K8s-minion-3"
-          plan: "t3.small.x86"
-          facility: "sjc1"
+          plan: "t1.small.x86"
+          facility: "ewr1"
           operating_system: "centos_7"
           quantity: 4
           spot_instance: false
