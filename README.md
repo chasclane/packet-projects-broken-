@@ -1,6 +1,6 @@
 # Charlie's Packet Adventure
 
-##(An exciting adventure taking some of our favorite tools with us on a journey to deploying on Packet.com. Some of these involved in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, helping us arrive at our destination: Packet Bare Metal!! )##
+## (An exciting adventure taking some of our favorite tools with us on a journey to deploying on Packet.com. Some of these involved in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, helping us arrive at our destination: Packet Bare Metal!! )
 
 
 ## Before We Begin 
