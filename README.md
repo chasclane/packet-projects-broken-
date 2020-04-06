@@ -190,7 +190,7 @@ The runner then tests this by executing the command:
 kubectl get nodes
 ```
 
-#So... what next? 
+# So... what next? 
 
 ***Well, that's up to you! Now that we've put the CI/CD framework in place, you're ready to either scale your k8s cluster up or down, deploy container workloads and explore the power of deploying to a true bare-metal as a service platform using an awesome set of tools to build and use our awesome new CI/CD pipeline!***
 
