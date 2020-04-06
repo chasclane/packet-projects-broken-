@@ -3,31 +3,54 @@
 ### An exciting adventure taking place! Alongside some of our favorite DevOps tools, let's go on a deployment journey to Packet.com! 
 Some of the tools we'll be using in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, all helping us arrive at our destination: **Packet Bare Metal!**
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Before We Begin 
 
 There are some preliminary steps that we need to take before we can execute our Actions to begin our deployment workflows. 
 
-## Setup Private key to be stored in repo.
+## Preliminary Step 1: Setup `PACKET_API_KEY` secret. 
 
-In order to use Ansible, first we will need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
+Log in to the Packet.com portal, click on your user profile on the top right, select `API Keys`. 
+Generate a new Read/Write API key, labeling it with an appropriate description set for explicit use. `Copy` the token of that key. 
 
-We will set the passphrase for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our  public key (`PACKET_PUBLIC_KEY`)
+Navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_API_KEY`, and `paste` the token you copied from the previous step, and save the secret.
 
-**To Use GPG and store for later use:**
-Run:
-```shell
-  `gpg --symmetric --cipher-algo AES256 /path/to/my_private_key.pem`
+
+## Preliminary Step 2: Store your generated public key for use in the workflows as `PACKET_PUBLIC_KEY` secret.
+
+If you have not generated a key pair yet, follow the guide here according to the OS you're running. Once you have your key pair, `copy` the contents of your public key key file. 
+
+Note: It should start with something like this:
 ```
-This will output `my_private_key.gpg`
+ssh-rsa AAAA............== rsa-key-xxxxxxx
+```
+Next, navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_PUBLIC_KEY`, and `paste` the value you copied from the previous step, and save the secret.
 
-Place that in the `root` directory of the repository, alongside the 'ansible' directory.
 
-**Decrypting this file:**
+## Preliminary Step 3: Setup Private key to be stored in repo secret named: `PACKET_PRIVATE_KEY`.
 
-Next we create a secret called `PACKET_PRIVATE_KEY` and assign the **gpg passphrase** as the value to this secret.
+In order to use Ansible to run playbooks on the target systems, we will first need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
 
-We use that secret in an action that is a part of the `run-ansible.yml` file. It looks like this:
+Execute the following command to encrypt your private key (in `.pem` format) and specify an appropriately strong **gpg passphrase** when prompted. Copy this passphrase for the next step. 
+
+```shell
+  gpg --symmetric --cipher-algo AES256 /path/to/my_private_key.pem
+```
+This will output `my_private_key.gpg`. 
+
+Rename this key to: `id_packet.gpg`.
+
+Place the `id_packet.gpg` file in the `root` directory of the repository, alongside the 'ansible' directory.
+
+We will then set the **gpg passphrase** for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our public key (`PACKET_PUBLIC_KEY`)
+
+To do this, we again navigate to our repo `Secrets` in the repository settings, create a new secret named `PACKET_PRIVATE_KEY`, and `paste` the **gpg passphrase** you copied from the previous step, and save the secret.
+
+### This object in use - Decrypting the secret:
+
+This secret is used in an Action that is a part of the `run-ansible.yml` file. It looks like this:
 
 ```yaml
 - name: Decrypt Pem
@@ -39,7 +62,11 @@ We use that secret in an action that is a part of the `run-ansible.yml` file. It
        SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
 ```
 
-This will decrypt your key inside of the runner and it will be destroyed when the job is complete
+This will decrypt your key inside of the runner and will be destroyed when the job is complete.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## So, what's the Plan? 
 
