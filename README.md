@@ -49,6 +49,13 @@ We're going to be running 3 Workflows:
 2. Create a Kubernetes cluster with Ansible
 3. Deploy Kubernetes Nodes w/ workloads
 
+Looks something like this:
+
+![Packet-Project](https://github.com/chasclane/packet-projects/blob/master/Charlie's%20Packet%20Adventure%20Diagram.png)
+
+
+Okay, we're ready to run our first workflow!
+
 **1. Provision our Environment**
 
 - Actions In Use For This Workflow: 
