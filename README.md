@@ -1,7 +1,7 @@
 # Charlie's Packet Adventure
 
-### An exciting adventure taking some of our favorite tools with us on a journey to deploying on Packet.com. 
-Some of these involved in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, all helping us arrive at our destination: **Packet Bare Metal!!**
+### An exciting adventure taking place! Alongside some of our favorite DevOps tools, let's go on a deployment journey to Packet.com! 
+Some of the tools we'll be using in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, all helping us arrive at our destination: **Packet Bare Metal!**
 
 
 ## Before We Begin 
@@ -106,9 +106,14 @@ ports:
 
 token_file: join_token
 ```
-Next thing before we move on to the next workflow, is we'll paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
+Before we move on to the next workflow, let's paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
 
-Now we can move on to Workflow 2!
+This will ensure that the fun doesn't have to stop at the end of the 3rd workflow. Much more can be easily executed in our new k8s environment!
+
+Now it's time to move on to Workflow 2!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **2. Create a Kubernetes cluster with Ansible**
 
@@ -154,6 +159,11 @@ The Ansible playbook: `configure_worker_nodes.yml` performs the following tasks 
 - Join the minion nodes to the kubernetes cluster 
 
 Note: This may take some time to complete
+
+Once complete, we can move on to Workflow 3!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **3. Deploy Kubernetes pods w/ workloads**
 
