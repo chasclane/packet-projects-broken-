@@ -90,7 +90,7 @@ Okay, we're ready to run our first workflow!
 
 - Actions In Use For This Workflow: 
 
-https://github.com/mattdavis0351/packet-create-user-ssh-key
+https://github.com/mattdavis0351/packet-create-user-ssh-key 
 https://github.com/mattdavis0351/packet-create-project 
 https://github.com/mattdavis0351/packet-create-device-batch 
 
@@ -98,7 +98,7 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
 
-Star this to Run:
+`Star` the project to Run:
 https://github.com/chasclane/packet-projects/blob/master/.github/workflows/provision-env.yml
 
 - What's happening and how:
