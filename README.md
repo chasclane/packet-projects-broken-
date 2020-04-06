@@ -10,7 +10,8 @@ Some of the tools we'll be using in this project include: Ansible, Kubernetes, G
 
 There are some preliminary steps that we need to take before we can execute our Actions to begin our deployment workflows. 
 
-## Preliminary Step 1: Setup `PACKET_API_KEY` secret. 
+## Preliminary Step 1: Setup the secret: 
+`PACKET_API_KEY` 
 
 Log in to the Packet.com portal, click on your user profile on the top right, select `API Keys`. 
 Generate a new Read/Write API key, labeling it with an appropriate description set for explicit use. `Copy` the token of that key. 
@@ -18,7 +19,8 @@ Generate a new Read/Write API key, labeling it with an appropriate description s
 Navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_API_KEY`, and `paste` the token you copied from the previous step, and save the secret.
 
 
-## Preliminary Step 2: Store your generated public key for use in the workflows as `PACKET_PUBLIC_KEY` secret.
+## Preliminary Step 2: Store your generated public key for use in the workflows as the secret: 
+`PACKET_PUBLIC_KEY`
 
 If you have not generated a key pair yet, follow the guide here according to the OS you're running. Once you have your key pair, `copy` the contents of your public key key file. 
 
@@ -29,7 +31,8 @@ ssh-rsa AAAA............== rsa-key-xxxxxxx
 Next, navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_PUBLIC_KEY`, and `paste` the value you copied from the previous step, and save the secret.
 
 
-## Preliminary Step 3: Setup Private key to be stored in repo secret named: `PACKET_PRIVATE_KEY`.
+## Preliminary Step 3: Setup Private key to be stored in repo secret named: 
+`PACKET_PRIVATE_KEY`
 
 In order to use Ansible to run playbooks on the target systems, we will first need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
 
