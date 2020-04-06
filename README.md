@@ -51,7 +51,7 @@ We're going to be running 3 Workflows:
 
 Looks something like this:
 
-![Packet-Project](https://github.com/chasclane/packet-projects/blob/master/Charlie's%20Packet%20Adventure%20Diagram.png)
+![Packet-Project](https://github.com/chasclane/packet-projects/blob/master/img/Charlie's%20Packet%20Adventure%20Diagram.png)
 
 
 Okay, we're ready to run our first workflow!
