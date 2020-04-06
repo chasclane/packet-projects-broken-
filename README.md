@@ -1,5 +1,9 @@
 # Charlie's Packet Adventure
 
+### An exciting adventure taking place! Alongside some of our favorite DevOps tools, let's go on a deployment journey to Packet.com! 
+Some of the tools we'll be using in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, all helping us arrive at our destination: **Packet Bare Metal!**
+
+
 ## Before We Begin 
 
 There are some preliminary steps that we need to take before we can execute our Actions to begin our deployment workflows. 
@@ -8,7 +12,7 @@ There are some preliminary steps that we need to take before we can execute our 
 
 In order to use Ansible, first we will need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
 
-We will set the passphrase for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our  public key (PACKET_PUBLIC_KEY)
+We will set the passphrase for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our  public key (`PACKET_PUBLIC_KEY`)
 
 **To Use GPG and store for later use:**
 Run:
@@ -55,7 +59,10 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 - How we're executing this one: 
 
-We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "watched".
+We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
+
+Star this to Run:
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/provision-env.yml
 
 - What's happening and how:
 
@@ -99,9 +106,14 @@ ports:
 
 token_file: join_token
 ```
-Next thing before we move on to the next workflow, is we'll paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
+Before we move on to the next workflow, let's paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
 
-Now we can move on to Workflow 2!
+This will ensure that the fun doesn't have to stop at the end of the 3rd workflow. Much more can be easily executed in our new k8s environment!
+
+Now it's time to move on to Workflow 2!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **2. Create a Kubernetes cluster with Ansible**
 
@@ -115,6 +127,10 @@ https://github.com/marketplace/actions/checkout
 - How we're executing this one: 
 
 In order to execute this step, we have configured it to trigger on the "labeled" event. This means it will run when we add a Label to an issue for the workflow file: `run-ansible.yml`
+
+Add the label: Much Awesome to this to Run the workflow:
+
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/run-ansible.yml
 
 - What's happening and how:
 
@@ -144,6 +160,11 @@ The Ansible playbook: `configure_worker_nodes.yml` performs the following tasks 
 
 Note: This may take some time to complete
 
+Once complete, we can move on to Workflow 3!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 **3. Deploy Kubernetes pods w/ workloads**
 
 The last workload we'll be executing is to deploy Kubernetes pods with our desired workloads
@@ -156,8 +177,20 @@ https://github.com/marketplace/actions/checkout
 
 This workflow is executed on the event that a comment is added or edited on the workflow file: deploy-k8s.yml. 
 
+Add or edit a comment to run the last workflow here:
+
+https://github.com/chasclane/packet-projects/blob/master/.github/workflows/deploy-k8s.yml
+
 The first job this workflow is executing is to deploy Kubernetes CLI kubectl to the runner so that it can execute commands for the kubernetes master remotely. 
 
 To do this, we securely copy the ssh keys to the runner so it can execute commands using ssh. 
 
-The runner then tests this by executing the command: ```kubectl get nodes```
+The runner then tests this by executing the command: 
+```shell
+kubectl get nodes
+```
+
+# So... what next? 
+
+***Well, that's up to you! Now that we've put the CI/CD framework in place, you're ready to either scale your k8s cluster up or down, deploy container workloads and explore the power of deploying to a true bare-metal as a service platform using an awesome set of tools to build and use our awesome new CI/CD pipeline!***
+
