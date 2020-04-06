@@ -3,10 +3,10 @@ on:
     types:
       - labeled
 
-name: create a k8s cluster with ansible
+name: Create a Kubernetes cluster with Ansible
 
 env:
-  PROJECT_NAME: With-ansible
+  PROJECT_NAME: Charlie's Packet Adventure
 
 jobs:
   create-inventory:
@@ -55,7 +55,7 @@ jobs:
           cd ansible
           ansible-playbook setup_master_node.yml
 
-      - name: Setup K8s Workers
+      - name: Setup K8s minions
         if: success()
         run: |
           cd ansible

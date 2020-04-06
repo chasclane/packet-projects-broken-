@@ -2,7 +2,7 @@ on: [watch]
 
 name: Provision Environment
 env:
-  PROJECT_NAME: With-ansible #change this to be a name you want
+  PROJECT_NAME: Charlie's Packet Adventure
 
 jobs:
   transfer-user-ssh-keys:
@@ -14,7 +14,7 @@ jobs:
         id: key
         with:
           API_key: ${{ secrets.PACKET_API_KEY }}
-          key_label: matt-actions
+          key_label: charlie-actions
           public_key: ${{ secrets.PACKET_PUBLIC_KEY }}
 
   deploy-new-project-and-device-batch:
@@ -35,11 +35,11 @@ jobs:
         with:
           API_key: ${{ secrets.PACKET_API_KEY }}
           project_name: ${{ env.PROJECT_NAME }}
-          host_names: "K8s Master, K8s-minion 1,K8s-minion-2,K8s-minion-3"
+          host_names: "K8s-Master, K8s-minion-1, K8s-minion-2, K8s-minion-3"
           plan: "t3.small.x86"
           facility: "sjc1"
           operating_system: "centos_7"
           quantity: 4
           spot_instance: false
-          spot_price_max: .50
+          spot_price_max: 2.50
           user_ssh_keys: ${{ secrets.PACKET_PUBLIC_KEY }}
