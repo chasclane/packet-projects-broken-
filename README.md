@@ -10,7 +10,7 @@ Here's what you need in order to go on this adventure:
 
 1. The ability to SSH, either natively or via an SSH Client such as `PuTTY` (Particularly useful for troubleshooting and validation, though not mandatory for this lab.)  If you want to use `PuTTy`, you can download it here: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
 
-2. A text editor - Preferably one that parses code easily for readability. Though not required to execute anything, is helpful to peruse the code to gain a better understanding of how it works. There are many out there, and 
+2. A text editor - Preferably one that parses code easily for readability. Though not required to execute anything, is helpful to peruse the code to gain a better understanding of how it works. There are many out there, choose the best one... :) 
 
 3. A Web Browser - (Chrome, Firefox, Iceweasel, Safari, IE, Edge, etc.) 
 
