@@ -117,8 +117,8 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
 
-To run this workflow: `Star` (or Unstar then Star): 
-<a class="github-button" href="https://github.com/ntkme/github-buttons" data-icon="octicon-star" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
+To run this workflow select the `Star` (or Unstar then Star): 
+<iframe src="https://ghbtns.com/github-btn.html?user=twbs&repo=bootstrap&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
 
 - What's happening and how:
 
