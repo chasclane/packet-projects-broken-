@@ -5,6 +5,23 @@ Some of the tools we'll be using in this project include: Ansible, Kubernetes, G
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Getting Started
+Here's what you need in order to go on this adventure:
+
+1. The ability to SSH, either natively or via an SSH Client such as `PuTTY` (Particularly useful for troubleshooting and validation, though not mandatory for this lab.)  If you want to use `PuTTy`, you can download it here: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
+
+2. A text editor - Preferably one that parses code easily for readability. Though not required to execute anything, is helpful to peruse the code to gain a better understanding of how it works. There are many out there, and 
+
+3. A Web Browser - (Chrome, Firefox, Iceweasel, Safari, IE, Edge, etc.) 
+
+4. An account on Packet.com - A trial account is available and you get $30 of free credits you can use for building, deploying, and testing this and other projects. 
+
+5. A GitHub account - A good bit of this project is leveraging the power of GitHub Actions. Can't run GitHub Actions without GitHub. (Right??)
+
+***Note: Packet.com is not a free service. To create an account, you must provide a credit card, however it will not be charged unless you upgrade service before or at the end of your free trial period. None of these workflows, Actions, or playbooks have access to your billing information. 
+
+**PROTIP:
+$30 worth of this high quality service can actually take you pretty far. It should be plenty to let you experience the platform in a lot of really great ways. However, because Free is still "Free", devices available at the free tier can sometimes be pretty spotty. So, if you encounter errors that ellude to machines not being available, or not responding, or when all troubleshooting points to nothing... delete the project and SSH key and redeploy again. 
 
 ## Before We Begin 
 
@@ -14,21 +31,23 @@ There are some preliminary steps that we need to take before we can execute our 
 `PACKET_API_KEY` 
 
 Log in to the Packet.com portal, click on your user profile on the top right, select `API Keys`. 
-Generate a new Read/Write API key, labeling it with an appropriate description set for explicit use. `Copy` the token of that key. 
+Generate a new Read/Write API key, labeling it with an appropriate description set for explicit use. `Copy` the token shown there. 
 
-Navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_API_KEY`, and `paste` the token you copied from the previous step, and save the secret.
+Navigate to your repo's `Secrets` which can be found under the `settings` tab, create a new secret named `PACKET_API_KEY`, and `paste` the token you copied from the previous step, and save the secret.
 
 
 ## Preliminary Step 2: Store your generated public key for use in the workflows as the secret: 
 `PACKET_PUBLIC_KEY`
 
-If you have not generated a key pair yet, follow the guide here according to the OS you're running. Once you have your key pair, `copy` the contents of your public key key file. 
+If you have not generated a key pair yet and need steps to do so, follow the steps according to the OS you're running listed in the guide here: https://www.packet.com/developers/docs/servers/key-features/ssh-keys/. 
+
+Once you have your key pair, `copy` the contents of your public key key file. 
 
 Note: It should start with something like this:
 ```
 ssh-rsa AAAA............== rsa-key-xxxxxxx
 ```
-Next, navigate to your repo `Secrets` in the repository settings, create a new secret named `PACKET_PUBLIC_KEY`, and `paste` the value you copied from the previous step, and save the secret.
+Next, navigate to your repo's `Secrets` which can be found under the `settings` tab. Then, create a new secret named `PACKET_PUBLIC_KEY`, and `paste` the value you copied from the previous step, and save the secret.
 
 
 ## Preliminary Step 3: Setup Private key to be stored in repo secret named: 
@@ -49,7 +68,7 @@ Place the `id_packet.gpg` file in the `root` directory of the repository, alongs
 
 We will then set the **gpg passphrase** for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our public key (`PACKET_PUBLIC_KEY`)
 
-To do this, we again navigate to our repo `Secrets` in the repository settings, create a new secret named `PACKET_PRIVATE_KEY`, and `paste` the **gpg passphrase** you copied from the previous step, and save the secret.
+To do this, we again navigate to your repo's `Secrets` which can be found under the `settings` tab. Then, create a new secret named `PACKET_PRIVATE_KEY`, and `paste` the **gpg passphrase** you copied from the previous step, and save the secret.
 
 ### This object in use - Decrypting the secret:
 
@@ -65,13 +84,13 @@ This secret is used in an Action that is a part of the `run-ansible.yml` file. I
        SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
 ```
 
-This will decrypt your key inside of the runner and will be destroyed when the job is complete.
+NOTE: This will decrypt your key inside of the runner and will be destroyed when the job is complete. (Additional steps should be taken for production environments to ensure the confidentiality of your keys is maintained.)
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## So, what's the Plan? 
+## So, what's our Plan? 
 
 We're going to be running 3 Workflows:
 
@@ -98,8 +117,8 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
 
-`Star` the project to Run:
-https://github.com/chasclane/packet-projects/blob/master/.github/workflows/provision-env.yml
+To run this workflow: `Star` (or Unstar then Star): 
+<a class="github-button" href="https://github.com/ntkme/github-buttons" data-icon="octicon-star" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
 
 - What's happening and how:
 
