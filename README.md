@@ -117,7 +117,7 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
 
-To run this workflow select the `Star` (or Unstar then Star): 
+To run this workflow select the `Star` (or Unstar then Star) at the top-right corner of the project repo: 
 <a class="github-button" href="https://github.com/chasclane/packet-projects" data-icon="octicon-star" data-size="large" aria-label="Star chasclane/packet-projects on GitHub">Star</a>
 
 - What's happening and how:
@@ -134,13 +134,13 @@ Once our Project is created, we send a runner to build a device batch group whic
 
 Our new devices will be: One Kubernetes Master node named: `K8s-Master` and three Minion nodes named: `K8s-minion-1`, `K8s-minion-2`, and `K8s-minion-3`
 
-**Let's Pause here for a minute**
+**Let's Pause here to take care of a couple things** (THIS STEP WILL BE AUTOMATED IN THE NEAR FUTURE)
 
-Before we move on, there are a couple things we have to do once the previous workflow is complete, and our 4 nodes are successfully deployed. NOTE: While the workflow will show as completed, the nodes may still be in the process of being provisioned. This can take some time. 
+Before we move on, there are a couple things we have to do once the previous workflow is complete, and our 4 nodes are successfully deployed. NOTE: While the workflow will show as completed, the nodes may still be in the process of being provisioned. This can take some time. Validate the status by logging in to the Packet.com portal, opening your new project, and going to your devices/servers. 
 
-Once these have been successfully deployed, we need to access the Packet Portal, navigate to our project, find our newely deployed instances, and document the assigned IPv4 address for our `K8s-Master`. We'll need to then add this IP address in a couple of places for the next steps to run correctly. 
+Once these have been successfully deployed, in the Packet.com portal, navigate to our project, locate our newely deployed instances. take note of the assigned IPv4 address for our `K8s-Master`machine. We'll need to then add this IP address in a couple of places for the next steps to run correctly.  (THIS STEP WILL BE AUTOMATED IN THE NEAR FUTURE)
 
-Copy the address assigned to the `K8s-Master` node and paste it as the variable `ad_addr` in the environment variables file `env_variables` located at the root of the repository. The end result of that should look like:
+Copy the address assigned to the `K8s-Master` node and paste it as the variable `ad_addr` in the environment variables file `env_variables` located at the root of the repository. The end result of that should look like: 
 
 ```yaml
 #Enter the IP Address of the Kubernetes Master node in for the ad_addr variable.
