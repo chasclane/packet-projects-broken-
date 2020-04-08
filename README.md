@@ -1,34 +1,38 @@
 # Charlie's Packet Adventure
 
-### An exciting adventure taking place! Alongside some of our favorite DevOps tools, let's go on a deployment journey to Packet.com! 
-Some of the tools we'll be using in this project include: Ansible, Kubernetes, GitHub, and GitHub Actions, all helping us arrive at our destination: **Packet Bare Metal!**
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Getting Started
 Here's what you need in order to go on this adventure:
 
-1. The ability to SSH, either natively or via an SSH Client such as `PuTTY` (Particularly useful for troubleshooting and validation, though not mandatory for this lab.)  If you want to use `PuTTy`, you can download it here: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
+1. The ability to SSH, either natively or via an SSH Client such as `PuTTY` (This will be useful for troubleshooting and validation, though not mandatory for this exercise.)  If you want to use `PuTTy`, you can download it here: http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html 
 
-2. A text editor - Preferably one that parses code easily for readability. Though not required to execute anything, is helpful to peruse the code to gain a better understanding of how it works. There are many out there, choose the best one... :) 
+2. A text editor - Preferably one that parses code easily for readability. Though also not required to execute anything, is helpful to peruse the code to gain a better understanding of how it works. There are many out there, choose the best one... :) 
 
 3. A Web Browser - (Chrome, Firefox, Iceweasel, Safari, IE, Edge, etc.) 
 
 4. An account on Packet.com - A trial account is available and you get $30 of free credits you can use for building, deploying, and testing this and other projects. 
 
-5. A GitHub account - A good bit of this project is leveraging the power of GitHub Actions. Can't run GitHub Actions without GitHub. (Right??)
+5. A GitHub account - Critical pieces of this project leverages the power of GitHub Actions. Can't run GitHub Actions without GitHub. (Right??)
 
 ***Note: Packet.com is not a free service. To create an account, you must provide a credit card, however it will not be charged unless you upgrade service before or at the end of your free trial period. None of these workflows, Actions, or playbooks have access to your billing information. 
 
 **PROTIP:
-$30 worth of this high quality service can actually take you pretty far. It should be plenty to let you experience the platform in a lot of really great ways. However, because Free is still "Free", devices available at the free tier can sometimes be pretty spotty. So, if you encounter errors that ellude to machines not being available, or not responding, or when all troubleshooting points to nothing... delete the project and SSH key and redeploy again. 
+The free trial for Packet provides up to $30 worth of this high quality service, which can actually take you pretty far. It should be plenty to let you experience the platform in a lot of really great ways. However, because Free is still "Free", devices available at the free tier can sometimes be pretty spotty. So, if you encounter errors that ellude to machines not being available, or not responding, or when all troubleshooting points to nothing... delete the project and SSH key and redeploy again. 
 
-## Before We Begin 
+# Before We Begin 
 
 There are some preliminary steps that we need to take before we can execute our Actions to begin our deployment workflows. 
 
-## Preliminary Step 1: Setup the Packet.com API secret: 
-`PACKET_API_KEY` 
+## Pre Step 1. Create a GitHub account and a New Repository.
+
+Create an account on GitHub.com if you don't have one already. Create a new repository named `packet-projects`. 
+
+`Copy` or `Clone` Everything EXCEPT the "id_packet.gpg" from this repository contents into your new repository. You will be creating your own "id_packet.gpg" in later steps. Note: If you keep the same file, the steps that rely on that will ultimately fail. 
+
+## Pre Step 2: Setup the Packet.com API secret:`PACKET_API_KEY` 
+
+Create an account on Packet.com and follow the required steps to enable the free trial. 
 
 Log in to the Packet.com portal, click on your user profile on the top right, select `API Keys`. 
 Generate a new Read/Write API key, labeling it with an appropriate description set for explicit use. `Copy` the token shown there. 
@@ -36,26 +40,24 @@ Generate a new Read/Write API key, labeling it with an appropriate description s
 Navigate to your repo's `Secrets` which can be found under the `settings` tab, create a new secret named `PACKET_API_KEY`, and `paste` the token you copied from the previous step, and save the secret.
 
 
-## Preliminary Step 2: Store your generated public key for use in the workflows as the secret: 
-`PACKET_PUBLIC_KEY`
+## Pre Step 3: Store your new public key for use in the workflows as the new secret:`PACKET_PUBLIC_KEY`
 
 If you have not generated a key pair yet and need steps to do so, follow the steps according to the OS you're running listed in the guide here: https://www.packet.com/developers/docs/servers/key-features/ssh-keys/. 
 
 Once you have your key pair, `copy` the contents of your public key key file. 
 
 Note: It should start with something like this:
-```
-ssh-rsa AAAA............== rsa-key-xxxxxxx
-```
+  ```
+  ssh-rsa AAAA............== rsa-key-xxxxxxx
+  ```
 Next, navigate to your repo's `Secrets` which can be found under the `settings` tab. Then, create a new secret named `PACKET_PUBLIC_KEY`, and `paste` the value you copied from the previous step, and save the secret.
 
 
-## Preliminary Step 3: Setup Private key to be stored in repo secret named: 
-`PACKET_PRIVATE_KEY`
+## Pre Step 4: Setup Private key to be stored in the new secret:`PACKET_PRIVATE_KEY`
 
 In order to use Ansible to run playbooks on the target systems, we will first need to store our private key so that the Ansible host can use it to authenticate to the target machines. GitHub Secrets have a small character storage size, so we have to encrypt the Private key file with `gpg` and then commit it in the repo.
 
-Execute the following command to encrypt your private key (in `.pem` format) and specify an appropriately strong **gpg passphrase** when prompted. Copy this passphrase for the next step. 
+Execute the following command to encrypt your private key (in `.pem` format) and specify an appropriately strong **gpg passphrase** when prompted to enter one. Copy this passphrase for the next step. 
 
 ```shell
   gpg --symmetric --cipher-algo AES256 /path/to/my_private_key.pem
@@ -64,33 +66,33 @@ This will output `my_private_key.gpg`.
 
 Rename this key to: `id_packet.gpg`.
 
-Place the `id_packet.gpg` file in the `root` directory of the repository, alongside the 'ansible' directory.
+Place the `id_packet.gpg` file in the `root` directory of the repository. This should be at the same level as the 'ansible' directory.
 
 We will then set the **gpg passphrase** for decryption as a repository secret, exactly the same way we did for our API key ( `PACKET_API_KEY` ) and our public key (`PACKET_PUBLIC_KEY`)
 
-To do this, we again navigate to your repo's `Secrets` which can be found under the `settings` tab. Then, create a new secret named `PACKET_PRIVATE_KEY`, and `paste` the **gpg passphrase** you copied from the previous step, and save the secret.
+  To do this, we again navigate to your repo's `Secrets` which can be found under the `settings` tab. Then, create a new secret named `PACKET_PRIVATE_KEY`, and `paste` the **gpg passphrase** you copied from the previous step, and save the secret.
 
-### This object in use - Decrypting the secret:
+  ### This object in use - Decrypting the secret:
 
-This secret is used in an Action that is a part of the `run-ansible.yml` file. It looks like this:
+  This secret is used in an Action that is a part of the `run-ansible.yml` file. It looks like this:
 
-```yaml
-- name: Decrypt Pem
-     run: |
-       mkdir $HOME/secrets
-       gpg --quiet --batch --yes --decrypt --passphrase="$SECRET_PASSPHRASE" --output $HOME/secrets/my_private_key.pem my_private_key.gpg
-       chmod 600 $HOME/secrets/packet_private_key.pem
-     env:
-       SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
-```
+  ```yaml
+  - name: Decrypt Pem
+       run: |
+         mkdir $HOME/secrets
+         gpg --quiet --batch --yes --decrypt --passphrase="$SECRET_PASSPHRASE" --output $HOME/secrets/my_private_key.pem my_private_key.gpg
+         chmod 600 $HOME/secrets/packet_private_key.pem
+       env:
+         SECRET_PASSPHRASE: ${{ secrets.PACKET_PRIVATE_KEY }}
+  ```
 
-NOTE: This will decrypt your key inside of the runner and will be destroyed when the job is complete. (Additional steps should be taken for production environments to ensure the confidentiality of your keys is maintained.)
+   NOTE: This will decrypt your key inside of the runner and will be destroyed when the job is complete. (Additional steps should be taken for production environments to ensure the confidentiality of your keys is maintained.)
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## So, what's our Plan? 
+# So, what's our Plan? 
 
 We're going to be running 3 Workflows:
 
@@ -105,7 +107,7 @@ Looks something like this:
 
 Okay, we're ready to run our first workflow!
 
-**1. Provision our Environment**
+## 1. Provision our Environment
 
 - Actions In Use For This Workflow: 
 
@@ -117,8 +119,7 @@ https://github.com/mattdavis0351/packet-create-device-batch
 
 We're executing this workflow when the event on `watch` occurs. This means our workflow will trigger and run when the workflow file `provision-env.yml` is "Stared". 
 
-To run this workflow select the `Star` (or Unstar then Star) at the top-right corner of the project repo: 
-<a class="github-button" href="https://github.com/chasclane/packet-projects" data-icon="octicon-star" data-size="large" aria-label="Star chasclane/packet-projects on GitHub">Star</a>
+To run this workflow select the `Star` (or Unstar then Star) at the top-right corner of the project repo.
 
 - What's happening and how:
 
@@ -136,42 +137,44 @@ Our new devices will be: One Kubernetes Master node named: `K8s-Master` and thre
 
 **Let's Pause here to take care of a couple things** (THIS STEP WILL BE AUTOMATED IN THE NEAR FUTURE)
 
-Before we move on, there are a couple things we have to do once the previous workflow is complete, and our 4 nodes are successfully deployed. NOTE: While the workflow will show as completed, the nodes may still be in the process of being provisioned. This can take some time. Validate the status by logging in to the Packet.com portal, opening your new project, and going to your devices/servers. 
+Before we move on, there are a couple things we have to do once the previous workflow is complete, and our 4 nodes are successfully deployed. NOTE: While the workflow will show as completed, the nodes may still be in the process of being provisioned. This can take some time. 
 
-Once these have been successfully deployed, in the Packet.com portal, navigate to our project, locate our newely deployed instances. take note of the assigned IPv4 address for our `K8s-Master`machine. We'll need to then add this IP address in a couple of places for the next steps to run correctly.  (THIS STEP WILL BE AUTOMATED IN THE NEAR FUTURE)
+-Determine deployment status and grab the K8S master IP address: 
 
-Copy the address assigned to the `K8s-Master` node and paste it as the variable `ad_addr` in the environment variables file `env_variables` located at the root of the repository. The end result of that should look like: 
+  View the status of the previous workflow by logging in to the Packet.com portal, opening your new project, and go to your newly deployed instances. From here, take note of the assigned IPv4 address for our `K8s-Master`machine. We'll need to then add this IP address in a couple of places for the next steps to run correctly.  (THIS STEP WILL BE AUTOMATED IN THE NEAR FUTURE)
 
-```yaml
-#Enter the IP Address of the Kubernetes Master node in for the ad_addr variable.
-ad_addr: *Kube Master IP Here* 
-cidr_v: 10.244.0.0/16 #NOTE: Do Not Change This - flannel is looking for this block by default and we haven't configured it otherwise.
+  Copy the IPv4 address assigned to the `K8s-Master` node and paste it as the variable `ad_addr` in the environment variables file `env_variables` located at the root of the repository. The end result of that should look like: 
 
-packages:
-- kubeadm
-- kubectl
+    ```yaml
+    #Enter the IP Address of the Kubernetes Master node in for the ad_addr variable.
+    ad_addr: *Kube Master IP Here* 
+    cidr_v: 10.244.0.0/16 #NOTE: Do Not Change This - flannel is looking for this block by default and we haven't configured it otherwise.
 
-services:
-- docker
-- kubelet
-- firewalld
+    packages:
+    - kubeadm
+    - kubectl
 
-ports:
-- "6443/tcp"
-- "10250/tcp"
+    services:
+    - docker
+    - kubelet
+    - firewalld
 
-token_file: join_token
-```
-Before we move on to the next workflow, let's paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
+    ports:
+    - "6443/tcp"
+    - "10250/tcp"
 
-This will ensure that the fun doesn't have to stop at the end of the 3rd workflow. Much more can be easily executed in our new k8s environment!
+    token_file: join_token
+    ```
+-Before we move on to the next workflow, let's paste the same IP address in the final Workflow .yaml file: `deploy-k8s.yml` in the line with: `run: scp -i` replacing the existing IP address with the correct/current IP address for the master node. This task is ensuring that for any minion nodes to be managed by the master, that the K8s-Master node will be able to successfully SSh into each, if needed.  
+
+This will ensure that the fun doesn't have to stop at the end of the 3rd workflow in this exercise. Much more can be easily executed in our new k8s environment!
 
 Now it's time to move on to Workflow 2!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**2. Create a Kubernetes cluster with Ansible**
+## 2. Create a Kubernetes cluster with Ansible
 
 - Actions In Use For This Workflow:  
 
@@ -182,9 +185,9 @@ https://github.com/marketplace/actions/checkout
 
 - How we're executing this one: 
 
-In order to execute this step, we have configured it to trigger on the "labeled" event. This means it will run when we add a Label to an issue for the workflow file: `run-ansible.yml`
+In order to execute this step, we have configured the workflow to trigger on the "labeled" event. This means that it will run when we add a Label to an issue logged on the `Issues` tab of the repository.
 
-Add the label: Much Awesome to this to Run the workflow:
+Either create a new `Label`, or add an existing: I've added the label named "Much Awesome", and applied that label to an Issue I named `Are we having fun yet?`, which runs the following workflow:
 
 https://github.com/chasclane/packet-projects/blob/master/.github/workflows/run-ansible.yml
 
@@ -221,7 +224,7 @@ Once complete, we can move on to Workflow 3!
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**3. Deploy Kubernetes pods w/ workloads**
+## 3. Deploy Kubernetes pods w/ workloads
 
 The last workload we'll be executing is to deploy Kubernetes pods with our desired workloads
 
@@ -233,7 +236,7 @@ https://github.com/marketplace/actions/checkout
 
 This workflow is executed on the event that a comment is added or edited on the workflow file: deploy-k8s.yml. 
 
-Add or edit a comment to run the last workflow here:
+Add or edit a comment to an Issue to run the following workflow:
 
 https://github.com/chasclane/packet-projects/blob/master/.github/workflows/deploy-k8s.yml
 
@@ -242,6 +245,7 @@ The first job this workflow is executing is to deploy Kubernetes CLI kubectl to 
 To do this, we securely copy the ssh keys to the runner so it can execute commands using ssh. 
 
 The runner then tests this by executing the command: 
+
 ```shell
 kubectl get nodes
 ```
