@@ -11,14 +11,11 @@ Here's what you need in order to go on this adventure:
 
 3. A Web Browser - (Chrome, Firefox, Iceweasel, Safari, IE, Edge, etc.) 
 
-4. An account on Packet.com - A free trial account may be available where you might get up to $30 of free credits that you can use for building, deploying, and testing this and other projects. 
+4. An account on Packet.com - Sign up for an account, add a credit card, create an Organization.  
 
 5. A GitHub account - Critical pieces of this project leverages the power of GitHub Actions. Can't run GitHub Actions without GitHub. (Right??)
 
-***Note: Packet.com is not a free service. To create an account, you must provide a credit card, however it will not be charged unless you upgrade service before or at the end of your free trial period. None of these workflows, Actions, or playbooks have access to your billing information. 
-
-**PROTIP:
-If the free trial for Packet is available that provides up to $30 worth of this high quality service, this amount can actually take you pretty far. It should be plenty to let you experience the platform in a lot of really great ways. However, because Free is still "Free", devices available at the free tier can sometimes be pretty spotty. So, if you encounter errors that ellude to machines not being available, or not responding, or when all troubleshooting points to nothing... delete the project and SSH key and redeploy again. 
+***Note: Packet.com is not a free service. Yes... you must add a credit card. None of these workflows, Actions, or playbooks have access to your billing information. 
 
 # Before We Begin 
 
